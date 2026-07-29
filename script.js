@@ -76,9 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- PROJECT MODALS DATABASE ---
+    const GITHUB_PROFILE = 'https://github.com/ranaramprajapat-alt';
+    const GITHUB_USER = 'ranaramprajapat-alt';
     const projectData = {
         "multiplayer-games": {
-            title: "multiplayer-games",
+            title: "Multiplayer Game Zone",
             badge: "TypeScript Platform",
             desc: "A real-time multiplayer minigames platform featuring Drawing Guess, Ludo, and Snake & Ladders, built with React 19, TypeScript, Socket.io, and Express.",
             bullets: [
@@ -87,10 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Room matchmaking and state management handlers designed on an Express server."
             ],
             tags: ["React 19", "TypeScript", "Tailwind CSS v4", "Socket.io", "Express", "Node.js"],
-            badgeColors: { bg: 'rgba(157, 78, 221, 0.15)', text: '#c084fc', border: 'rgba(157, 78, 221, 0.25)' }
+            badgeColors: { bg: 'rgba(157, 78, 221, 0.15)', text: '#c084fc', border: 'rgba(157, 78, 221, 0.25)' },
+            githubUrl: `${GITHUB_PROFILE}/multiplayer-games`,
+            previewUrl: 'https://9z8pxw-3000.csb.app/',
+            liveLabel: 'Open on CodeSandbox'
         },
         "ai-3d-concept-visualizer": {
-            title: "ai-3d-concept-visualizer",
+            title: "AI 3D Concept Visualizer",
             badge: "3D Visualization",
             desc: "An interactive, web-based tool designed to model and explore artificial intelligence concepts and neural structures in a WebGL-powered 3D space.",
             bullets: [
@@ -99,7 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Supports orbit camera movement controls, zooms, and interactive node selections."
             ],
             tags: ["TypeScript", "WebGL", "Three.js", "AI Visuals", "Graphics Programming"],
-            badgeColors: { bg: 'rgba(0, 242, 254, 0.15)', text: '#00f2fe', border: 'rgba(0, 242, 254, 0.25)' }
+            badgeColors: { bg: 'rgba(0, 242, 254, 0.15)', text: '#00f2fe', border: 'rgba(0, 242, 254, 0.25)' },
+            githubUrl: `${GITHUB_PROFILE}/ai-3d-concept-visualizer`,
+            previewUrl: 'https://c87wcf-3000.csb.app/',
+            liveLabel: 'Open on CodeSandbox'
         },
         "Notebook": {
             title: "Notebook",
@@ -111,7 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Crafted with vanilla JavaScript for lightweight study tool execution."
             ],
             tags: ["JavaScript", "LLM Integration", "Parsing Algorithms", "Study Tools", "HTML/CSS"],
-            badgeColors: { bg: 'rgba(0, 242, 254, 0.15)', text: '#00f2fe', border: 'rgba(0, 242, 254, 0.25)' }
+            badgeColors: { bg: 'rgba(0, 242, 254, 0.15)', text: '#00f2fe', border: 'rgba(0, 242, 254, 0.25)' },
+            githubUrl: `${GITHUB_PROFILE}/Notebook`,
+            previewUrl: 'https://443ddh.csb.app/',
+            liveLabel: 'Open on CodeSandbox'
         },
         "Royal-King-s-Advanger-Game": {
             title: "Royal King's Game",
@@ -123,7 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Designed responsive game HUD layers using custom HTML and CSS."
             ],
             tags: ["JavaScript", "Game Loop", "Collision Logic", "Math Vectors", "User Interface Design"],
-            badgeColors: { bg: 'rgba(244, 63, 94, 0.15)', text: '#fda4af', border: 'rgba(244, 63, 94, 0.25)' }
+            badgeColors: { bg: 'rgba(244, 63, 94, 0.15)', text: '#fda4af', border: 'rgba(244, 63, 94, 0.25)' },
+            githubUrl: `${GITHUB_PROFILE}/Royal-King-s-Advanger-Game`,
+            previewUrl: 'https://royal-king-s-advanger-game.vercel.app/',
+            liveLabel: 'Open on Vercel'
         },
         "ATS": {
             title: "ATS Resume Screener",
@@ -135,7 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Designed lightweight text-matching algorithms in JavaScript."
             ],
             tags: ["JavaScript", "Text Parsing", "Regex matching", "Algorithms", "Document Screening"],
-            badgeColors: { bg: 'rgba(157, 78, 221, 0.15)', text: '#c084fc', border: 'rgba(157, 78, 221, 0.25)' }
+            badgeColors: { bg: 'rgba(157, 78, 221, 0.15)', text: '#c084fc', border: 'rgba(157, 78, 221, 0.25)' },
+            githubUrl: `${GITHUB_PROFILE}/ATS`,
+            previewUrl: null,
+            liveLabel: null
         }
     };
 
@@ -147,6 +164,86 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalDesc = document.getElementById('modalDesc');
     const modalList = document.getElementById('modalList');
     const modalTags = document.getElementById('modalTags');
+    const modalGithubLink = document.getElementById('modalGithubLink');
+    const modalPreviewBtn = document.getElementById('modalPreviewBtn');
+
+    // Preview tab elements
+    const modalContentDetails = document.getElementById('modalContentDetails');
+    const modalContentPreview = document.getElementById('modalContentPreview');
+    const tabDetails = document.getElementById('tabDetails');
+    const tabPreview = document.getElementById('tabPreview');
+    const previewIframe = document.getElementById('previewIframe');
+    const previewLoading = document.getElementById('previewLoading');
+    const previewError = document.getElementById('previewError');
+    const previewUrlText = document.getElementById('previewUrlText');
+    const previewOpenExternal = document.getElementById('previewOpenExternal');
+    const previewErrorGithub = document.getElementById('previewErrorGithub');
+
+    let currentPreviewUrl = '';
+    let currentGithubUrl = '';
+
+    // --- TAB SWITCHING ---
+    function switchTab(tab) {
+        if (tab === 'details') {
+            tabDetails.classList.add('active');
+            tabPreview.classList.remove('active');
+            modalContentDetails.classList.remove('hidden');
+            modalContentPreview.classList.add('hidden');
+        } else {
+            tabPreview.classList.add('active');
+            tabDetails.classList.remove('active');
+            modalContentPreview.classList.remove('hidden');
+            modalContentDetails.classList.add('hidden');
+            loadPreview(currentPreviewUrl, currentGithubUrl);
+        }
+    }
+
+    tabDetails.addEventListener('click', () => switchTab('details'));
+    tabPreview.addEventListener('click', () => switchTab('preview'));
+
+    // --- PREVIEW LOADER ---
+    function loadPreview(previewUrl, githubUrl) {
+        previewIframe.src = '';
+        previewError.style.display = 'none';
+        previewLoading.style.display = 'flex';
+        previewUrlText.textContent = previewUrl;
+        previewOpenExternal.href = previewUrl;
+        previewErrorGithub.href = githubUrl;
+
+        // Set iframe src and handle load/error
+        previewIframe.onload = () => {
+            previewLoading.style.display = 'none';
+            // Try to detect if the page loaded properly
+            try {
+                const iframeDoc = previewIframe.contentDocument || previewIframe.contentWindow.document;
+                if (!iframeDoc || iframeDoc.title === '' && iframeDoc.body.innerHTML.trim() === '') {
+                    showPreviewError();
+                }
+            } catch(e) {
+                // Cross-origin — assume loaded OK
+                previewLoading.style.display = 'none';
+            }
+        };
+        previewIframe.onerror = () => showPreviewError();
+
+        // Timeout fallback: if no load event in 8s, show error
+        const timeout = setTimeout(() => {
+            if (previewLoading.style.display !== 'none') showPreviewError();
+        }, 8000);
+
+        previewIframe.onload = () => {
+            clearTimeout(timeout);
+            previewLoading.style.display = 'none';
+        };
+
+        previewIframe.src = previewUrl;
+    }
+
+    function showPreviewError() {
+        previewLoading.style.display = 'none';
+        previewIframe.src = '';
+        previewError.style.display = 'flex';
+    }
 
     const projectTriggers = document.querySelectorAll('.project-link-btn');
 
@@ -154,11 +251,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = projectData[projectId];
         if (!data) return;
 
+        // Reset to Details tab
+        switchTab('details');
+
         modalTitle.textContent = data.title;
         modalBadge.textContent = data.badge;
         modalDesc.textContent = data.desc;
-        
-        // Update badge styling dynamically
+
+        // Store URLs
+        currentPreviewUrl = data.previewUrl || '';
+        currentGithubUrl = data.githubUrl || `https://github.com/${GITHUB_USER}`;
+
+        // Update GitHub link
+        modalGithubLink.href = currentGithubUrl;
+
+        // Preview button
+        modalPreviewBtn.onclick = () => switchTab('preview');
         modalBadge.className = 'modal-badge';
         if (data.badgeColors) {
             modalBadge.style.background = data.badgeColors.bg;
@@ -188,12 +296,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // disable page scroll
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         modal.classList.remove('active');
-        document.body.style.overflow = ''; // re-enable scroll
+        document.body.style.overflow = '';
+        // Reset iframe to stop loading
+        if (previewIframe) previewIframe.src = '';
     }
 
     projectTriggers.forEach(trigger => {
@@ -206,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalClose && modalOverlay) {
         modalClose.addEventListener('click', closeModal);
         modalOverlay.addEventListener('click', closeModal);
-        
+
         // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {

@@ -857,17 +857,34 @@
         <div class="modal-overlay" id="modalOverlay"></div>
         <div class="modal-container">
             <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-            <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
                 <span class="modal-badge" id="modalBadge">AI Project</span>
                 <h3 class="modal-title" id="modalTitle">Project Title</h3>
 
+                <!-- Tab Switcher -->
+                <div class="modal-tabs" id="modalTabs">
+                    <button class="modal-tab active" id="tabDetails" data-tab="details">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        Details
+                    </button>
+                    <button class="modal-tab" id="tabPreview" data-tab="preview">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        Live Preview
+                    </button>
+                </div>
+            </div>
+
+            <!-- Details Tab -->
+            <div class="modal-content" id="modalContentDetails">
                 <div class="modal-section">
                     <h4 class="modal-section-title">Concept Overview</h4>
                     <p class="modal-desc" id="modalDesc">Detailed description goes here...</p>
                 </div>
 
                 <div class="modal-section">
-                    <h4 class="modal-section-title">Key Elements & Logic</h4>
+                    <h4 class="modal-section-title">Key Elements &amp; Logic</h4>
                     <ul class="modal-list" id="modalList">
                         <li>Point details...</li>
                     </ul>
@@ -879,7 +896,46 @@
                         <span class="modal-tag">Tag</span>
                     </div>
                 </div>
+
+                <div class="modal-actions">
+                    <a href="#" id="modalGithubLink" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        View on GitHub
+                    </a>
+                    <button class="btn btn-primary" id="modalPreviewBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        Open Live Preview
+                    </button>
+                </div>
             </div>
+
+            <!-- Preview Tab -->
+            <div class="modal-content hidden" id="modalContentPreview">
+                <div class="preview-wrapper">
+                    <div class="preview-toolbar">
+                        <div class="preview-url-bar">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span id="previewUrlText">Loading...</span>
+                        </div>
+                        <a href="#" id="previewOpenExternal" target="_blank" rel="noopener noreferrer" class="preview-external-btn" title="Open in new tab">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </a>
+                    </div>
+                    <div class="preview-frame-wrapper">
+                        <iframe id="previewIframe" class="preview-iframe" title="Project Preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+                        <div class="preview-loading" id="previewLoading">
+                            <div class="preview-spinner"></div>
+                            <p>Loading preview...</p>
+                        </div>
+                        <div class="preview-error" id="previewError" style="display:none;">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            <p>Preview not available for this project.</p>
+                            <a href="#" id="previewErrorGithub" class="btn btn-secondary" target="_blank">View on GitHub instead</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
